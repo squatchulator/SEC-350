@@ -34,7 +34,7 @@ sudo tee /etc/wireguard/wg0.conf > /dev/null <<EOF
 [Interface]
 PrivateKey = $SERVERPRIV
 Address = 10.8.0.1/24
-ListenPort = 7890
+ListenPort = 51820
 SaveConfig = true
 PreUp = ufw route allow in on wg0 out on eth0
 PreUp = iptables -t nat -A PREROUTING -d 10.8.0.1 -p tcp --dport 3389 -j DNAT --to-destination 172.16.200.11:3389
@@ -47,7 +47,7 @@ PublicKey = $CLIENTPUB
 AllowedIPs = 10.8.0.2/24
 EOF
 # Allow the port through the local firewall, and restart it
-sudo ufw allow 7890/udp
+sudo ufw allow 51820/udp
 sudo ufw disable
 sudo ufw enable
 # Now, we need a config file for the client.
@@ -55,11 +55,11 @@ sudo tee /etc/wireguard/wg0-client.conf > /dev/null <<EOF
 [Interface]
 PrivateKey = $CLIENTPRIV
 Address = 10.8.0.2/24
-ListenPort = 7890
+ListenPort = 51820
 [Peer]
 PublicKey = $SERVERPUB
 AllowedIPs = 10.8.0.1/24
-Endpoint = 10.0.17.114:7890
+Endpoint = 10.0.17.114:51820
 EOF
 # Start the server
 sudo wg-quick up wg0
